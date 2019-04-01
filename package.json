@@ -1,0 +1,32 @@
+{
+  "name": "internet-and-cloud-services",
+  "version": "1.0.0",
+  "description": "repo for project in the course internet and cloud services",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node ./src/index.ts",
+    "test": "jest",
+    "test-watch": "jest --watch"
+  },
+  "keywords": [
+    "API",
+    "REST"
+  ],
+  "author": "Filip Andersson, Simon Arvidsson",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^23.3.3",
+    "@types/koa": "^2.0.46",
+    "@types/koa-router": "^7.0.32",
+    "@types/node": "^10.11.4",
+    "jest": "^23.6.0",
+    "nodemon": "^1.18.4",
+    "ts-jest": "^23.10.4",
+    "typescript": "^3.1.1"
+  },
+  "dependencies": {
+    "koa": "^2.5.3",
+    "koa-router": "^7.4.0",
+    "npm": "^6.9.0"
+  }
+}

@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "koa": "^2.5.3",
-    "koa-router": "^7.4.0",
-    "npm": "^6.9.0"
+    "koa-router": "^7.4.0"
   }
 }

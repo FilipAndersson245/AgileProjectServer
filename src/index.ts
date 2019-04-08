@@ -1,10 +1,27 @@
 import Koa from "koa";
 import Router from "koa-router";
+import Bodyparser from "koa-bodyparser";
+import {
+  gantryDoesNotExistResponse,
+  unauthorizationResponse
+} from "./models/error";
 
 const app = new Koa();
 const router = new Router();
 
-app.use(router.routes());
+app.use(Bodyparser()).use(router.routes());
+
+const token = "fhsakdjhjkfds";
+
+// tslint:disable-next-line:prefer-const
+let gantries = [
+  {
+    id: "abc123",
+    position: [0, 0],
+    lastUpdated: 1554198125,
+    price: 3.5
+  }
+];
 
 // logger
 app.use(async (ctx, next) => {
@@ -21,10 +38,27 @@ app.use(async (ctx, next) => {
   ctx.set("X-Response-Time", `${ms}ms`);
 });
 
-// response
-router.get("/name/:name", async (ctx, _next) => {
-  console.log(ctx.params.name);
-  ctx.body = `Hello ${ctx.params.name}`;
+router.post("/gantries/:id", async (ctx, _next) => {
+  if (ctx.headers.authorization !== `Bearer ${token}`) {
+    ctx.status = 401;
+    ctx.body = unauthorizationResponse;
+    return;
+  }
+  const gantryIndex = gantries.findIndex((item) => item.id === ctx.params.id);
+  // -1 equals not found with findIndex.
+  if (gantryIndex === -1) {
+    ctx.status = 404;
+    ctx.body = gantryDoesNotExistResponse;
+    return;
+  }
+  gantries[gantryIndex] = {
+    ...gantries[gantryIndex],
+    position: ctx.request.body.position
+  };
+  ctx.status = 200;
+  ctx.body = gantries[gantryIndex];
 });
 
-app.listen(3000);
+const server = app.listen(3000);
+
+export default server;

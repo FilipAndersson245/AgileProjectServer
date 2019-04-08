@@ -57,3 +57,27 @@ describe("Update gantry position test", () => {
     expect(response.body).toEqual(unauthorizationResponse);
   });
 });
+
+describe("Returns json data about multiple gantries", () => {
+  test("Should get data correctly", async () => {
+    const response = await request(app).get(`/gantries`);
+
+    expect(response.status).toEqual(200);
+    expect(response.type).toEqual("application/json");
+
+    expect(Array.isArray(response.body)).toBe(true);
+
+    if (response.body.length > 0) {
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.stringMatching(goodId),
+            position: expect.any(Object),
+            lastUpdated: expect.any(Number),
+            price: expect.any(Number)
+          })
+        ])
+      );
+    }
+  });
+});

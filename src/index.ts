@@ -45,6 +45,7 @@ router.post("/gantries/:id", async (ctx, _next) => {
     return;
   }
   const gantryIndex = gantries.findIndex((item) => item.id === ctx.params.id);
+  // -1 equals not found with findIndex.
   if (gantryIndex === -1) {
     ctx.status = 404;
     ctx.body = gantryDoesNotExistResponse;

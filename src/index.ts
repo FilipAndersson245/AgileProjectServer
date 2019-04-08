@@ -13,6 +13,7 @@ app.use(Bodyparser()).use(router.routes());
 
 const token = "fhsakdjhjkfds";
 
+// tslint:disable-next-line:prefer-const
 let gantries = [
   {
     id: "abc123",

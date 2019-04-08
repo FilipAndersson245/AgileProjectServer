@@ -14,7 +14,8 @@ app.use(Bodyparser()).use(router.routes());
 const token = "fhsakdjhjkfds";
 
 // tslint:disable-next-line:prefer-const
-let gantries = [
+// tslint:disable-next-line:no-any
+export let gantries = [
   {
     id: "abc123",
     position: [0, 0],
@@ -57,6 +58,11 @@ router.post("/gantries/:id", async (ctx, _next) => {
   };
   ctx.status = 200;
   ctx.body = gantries[gantryIndex];
+});
+
+router.get("/gantries", async (ctx, _next) => {
+  ctx.status = 200;
+  ctx.body = gantries;
 });
 
 const server = app.listen(3000);

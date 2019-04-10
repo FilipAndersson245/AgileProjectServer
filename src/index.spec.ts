@@ -2,22 +2,23 @@ import app from "./index";
 import request from "supertest";
 import {
   gantryDoesNotExistResponse,
-  unauthorizationResponse
+  unauthorizationResponse,
+  badRequestResponse
 } from "./models/error";
 
 afterEach(() => {
   app.close();
 });
 
-const goodId = "abc123";
-const badId = "jkl345";
-
-const goodBody = {
-  position: [3.213134, 12.438324]
-};
-const token = "fhsakdjhjkfds";
-
 describe("Update gantry position test", () => {
+  const goodId = "abc123";
+  const badId = "jkl345";
+
+  const goodBody = {
+    position: [3.213134, 12.438324]
+  };
+  const token = "fhsakdjhjkfds";
+
   test("Should send data correctly", async () => {
     const response = await request(app)
       .post(`/gantries/${goodId}`)
@@ -59,6 +60,8 @@ describe("Update gantry position test", () => {
 });
 
 describe("Returns json data about multiple gantries", () => {
+  const goodId = "abc123";
+
   test("Should get data correctly", async () => {
     const response = await request(app).get(`/gantries`);
 
@@ -79,5 +82,62 @@ describe("Returns json data about multiple gantries", () => {
         ])
       );
     }
+  });
+});
+
+describe("Tests passages", () => {
+  const goodId = "abc123";
+  const badId = "jkl345";
+
+  const goodBody = {
+    userId: 199308161337,
+    gantryId: goodId
+  };
+  const badBody = {
+    userId: 199308161337,
+    gantryId: badId
+  };
+  const token = "fhsakdjhjkfds";
+
+  test("Should post passage correcly", async () => {
+    const response = await request(app)
+      .post(`/passages`)
+      .auth(token, { type: "bearer" })
+      .send(goodBody);
+
+    expect(response.status).toEqual(200);
+    expect(response.type).toEqual("application/json");
+
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        id: expect.any(Number),
+        userId: expect.any(Number),
+        gantryId: expect.stringMatching(goodId),
+        position: expect.any(Object),
+        time: expect.any(Number),
+        price: expect.any(Number)
+      })
+    );
+  });
+
+  test("Should perform a bad request", async () => {
+    const response = await request(app)
+      .post(`/passages`)
+      .auth(token, { type: "bearer" })
+      .send(badBody);
+
+    expect(response.status).toEqual(400);
+    expect(response.type).toEqual("application/json");
+    expect(response.body).toEqual(badRequestResponse);
+  });
+
+  test("Should be unauthorized", async () => {
+    const response = await request(app)
+      .post(`/passages`)
+      .auth("jhkfdskjhfsdfsdih", { type: "bearer" })
+      .send(goodBody);
+    expect(response.status).toEqual(401);
+    expect(response.type).toEqual("application/json");
+    expect(response.body).toEqual(unauthorizationResponse);
   });
 });

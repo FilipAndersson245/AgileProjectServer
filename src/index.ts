@@ -46,6 +46,19 @@ let users = [
     address: "Coolstreet 8 56912 Jönköping Sweden"
   }
 ]
+export let invoices = [
+  {
+    id: 3,
+    amount: 2300,
+    firstName: "John",
+    lastName: "Smith",
+    address: "Coolstreet 8 56912 Jönköping Sweden",
+    personalId: 199301201337,
+    issuedAt: 1554198125,
+    dueDate: 1554198125,
+    paid: false
+  }
+];
 
 // logger
 app.use(async (ctx, next) => {
@@ -116,6 +129,17 @@ router.post("/passages", async (ctx, _next) => {
   passages = [...passages, newPassage];
   ctx.status = 200;
   ctx.body = newPassage;
+});
+
+router.get("/invoices", async (ctx, _next) => {
+  if (ctx.headers.authorization !== `Bearer ${token}`) {
+    ctx.status = 401;
+    ctx.body = unauthorizationResponse;
+    return;
+  }
+  ctx.body = invoices.filter((i) => i.personalId === parseInt(ctx.query.personalId));
+  ctx.status = 200;
+  return;
 });
 
 router.get("/passages", async (ctx, _next) => {

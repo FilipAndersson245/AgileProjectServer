@@ -235,4 +235,3 @@ describe("Invoices", async () => {
     expect(response.type).toEqual("application/json");
   });
 });
-

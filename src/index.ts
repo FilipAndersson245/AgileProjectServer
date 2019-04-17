@@ -28,7 +28,7 @@ export let gantries = [
 export let passages = [
   {
     id: 0,
-    userId: 199301201337,
+    personalId: 199301201337,
     gantryId: "abc123",
     position: [5.927545, 1.372983],
     time: 1554198125,
@@ -96,7 +96,7 @@ router.post("/passages", async (ctx, _next) => {
   }
   const newPassage = {
     id: passages.length,
-    userId: ctx.request.body.userId,
+    personalId: ctx.request.body.personalId,
     gantryId: gantry.id,
     position: gantry.position,
     time: Date.now(),

@@ -91,7 +91,7 @@ describe("Tests passages", () => {
   const badId = "jkl345";
 
   const goodBody = {
-    userId: 199308161337,
+    personalId: 199308161337,
     gantryId: goodId
   };
   const badBody = {
@@ -112,7 +112,7 @@ describe("Tests passages", () => {
     expect(response.body).toEqual(
       expect.objectContaining({
         id: expect.any(Number),
-        userId: expect.any(Number),
+        personalId: expect.any(Number),
         gantryId: expect.stringMatching(goodId),
         position: expect.any(Object),
         time: expect.any(Number),

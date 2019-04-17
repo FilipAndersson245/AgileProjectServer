@@ -143,11 +143,11 @@ describe("Tests passages", () => {
 });
 
 describe("Invoices", async () => {
-  const userId = "d340jfeowde";
-  const authenticationToken = "23wggassd";
+  const userId = "199301201337";
+  const authenticationToken = "fhsakdjhjkfds";
   test("Should get invoices", async () => {
     const response = await request(app)
-      .get(`/?personalId=${userId}`)
+      .get(`/invoices?personalId=${userId}`)
       .auth(authenticationToken, { type: "bearer" })
       .send();
     expect(response.status).toEqual(200);
@@ -173,7 +173,7 @@ describe("Invoices", async () => {
 
   test("should not be authorized", async () => {
     const response = await request(app)
-      .get(`/${userId}`)
+      .get(`/invoices?personalId=${userId}`)
       .auth(`${authenticationToken}abc`, { type: "bearer" })
       .send();
     expect(response.status).toEqual(401);

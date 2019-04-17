@@ -26,13 +26,13 @@ export let gantries = [
 ];
 
 export let passages = [
-  { 
+  {
     id: 0,
     userId: 199301201337,
     gantryId: "abc123",
-    position:  [5.927545,  1.372983],
-    time:  1554198125,
-    price:  120
+    position: [5.927545, 1.372983],
+    time: 1554198125,
+    price: 120
   }
 ];
 
@@ -83,8 +83,7 @@ router.post("/passages", async (ctx, _next) => {
     ctx.body = unauthorizationResponse;
     return;
   }
-  if(!ctx.request.body.userId || !ctx.request.body.gantryId)
-  {
+  if (!ctx.request.body.userId || !ctx.request.body.gantryId) {
     ctx.status = 400;
     ctx.body = badRequestResponse;
     return;
@@ -102,8 +101,8 @@ router.post("/passages", async (ctx, _next) => {
     position: gantry.position,
     time: Date.now(),
     price: gantry.price
-  }
-  passages = [...passages, newPassage]
+  };
+  passages = [...passages, newPassage];
   ctx.status = 200;
   ctx.body = newPassage;
 });

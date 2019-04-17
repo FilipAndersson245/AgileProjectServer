@@ -91,7 +91,7 @@ describe("Tests passages", () => {
   const badId = "jkl345";
 
   const goodBody = {
-    userId: 199308161337,
+    personalId: 199308161337,
     gantryId: goodId
   };
   const badBody = {
@@ -112,7 +112,7 @@ describe("Tests passages", () => {
     expect(response.body).toEqual(
       expect.objectContaining({
         id: expect.any(Number),
-        userId: expect.any(Number),
+        personalId: expect.any(Number),
         gantryId: expect.stringMatching(goodId),
         position: expect.any(Object),
         time: expect.any(Number),
@@ -149,7 +149,7 @@ describe("Test get user passages", () => {
   const token = "fhsakdjhjkfds";
 
   test("Should get user's passage correctly", async () => {
-    const response = await request(app).get(`/passages?userId=${existingUserId}`).auth(token, { type: "bearer" });
+      .get(`/passages?personalId=${existingUserId}`)
 
     expect(response.status).toEqual(200);
     expect(response.type).toEqual("application/json");
@@ -161,7 +161,7 @@ describe("Test get user passages", () => {
         expect.arrayContaining([
           expect.objectContaining({
             id: expect.any(Number),
-            userId: expect(existingUserId),
+            personalId: expect(existingUserId),
             gantryId: expect.any(Number),
             position: expect.any(Object),
             time: expect.any(Number),
@@ -173,7 +173,7 @@ describe("Test get user passages", () => {
   });
 
   test("Should not find user", async () => {
-    const response = await request(app).get(`/passages?userId=${noneExistingUserId}`);
+      .get(`/passages?personalId=${noneExistingUserId}`)
 
     expect(response.status).toEqual(404);
     expect(response.type).toEqual("application/json");
@@ -181,7 +181,7 @@ describe("Test get user passages", () => {
   });
 
   test("Should be unauthorized", async () => {
-    const response = await request(app).get(`/passages?userId=${existingUserId}`).auth("jhkfdskjhfsdfsdih", { type: "bearer" });
+      .get(`/passages?personalId=${existingUserId}`)
 
     expect(response.status).toEqual(401);
     expect(response.type).toEqual("application/json");

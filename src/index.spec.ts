@@ -149,7 +149,9 @@ describe("Test get user passages", () => {
   const token = "fhsakdjhjkfds";
 
   test("Should get user's passage correctly", async () => {
-    const response = await request(app).get(`/passages?userId=${existingUserId}`).auth(token, { type: "bearer" });
+    const response = await request(app)
+      .get(`/passages?personalId=${existingUserId}`)
+      .auth(token, { type: "bearer" });
 
     expect(response.status).toEqual(200);
     expect(response.type).toEqual("application/json");
@@ -161,7 +163,7 @@ describe("Test get user passages", () => {
         expect.arrayContaining([
           expect.objectContaining({
             id: expect.any(Number),
-            userId: expect(existingUserId),
+            personalId: expect(existingUserId),
             gantryId: expect.any(Number),
             position: expect.any(Object),
             time: expect.any(Number),
@@ -173,7 +175,9 @@ describe("Test get user passages", () => {
   });
 
   test("Should not find user", async () => {
-    const response = await request(app).get(`/passages?userId=${noneExistingUserId}`);
+    const response = await request(app)
+      .get(`/passages?personalId=${noneExistingUserId}`)
+      .auth(token, { type: "bearer" });
 
     expect(response.status).toEqual(404);
     expect(response.type).toEqual("application/json");
@@ -181,10 +185,54 @@ describe("Test get user passages", () => {
   });
 
   test("Should be unauthorized", async () => {
-    const response = await request(app).get(`/passages?userId=${existingUserId}`).auth("jhkfdskjhfsdfsdih", { type: "bearer" });
+    const response = await request(app)
+      .get(`/passages?personalId=${existingUserId}`)
+      .auth("jhkfdskjhfsdfsdih", { type: "bearer" });
 
     expect(response.status).toEqual(401);
     expect(response.type).toEqual("application/json");
     expect(response.body).toEqual(unauthorizationResponse);
   });
 });
+
+describe("Invoices", async () => {
+  const userId = "199301201337";
+  const authenticationToken = "fhsakdjhjkfds";
+  test("Should get invoices", async () => {
+    const response = await request(app)
+      .get(`/invoices?personalId=${userId}`)
+      .auth(authenticationToken, { type: "bearer" })
+      .send();
+    expect(response.status).toEqual(200);
+    expect(response.type).toEqual("application/json");
+
+    expect(Array.isArray(response.body)).toBe(true);
+    if (response.body.length > 0) {
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(Number),
+            amount: expect.any(Number),
+            firstName: expect.any(String),
+            lastName: expect.any(String),
+            address: expect.any(String),
+            personalId: expect.any(Number),
+            issuedAt: expect.any(Number),
+            dueDate: expect.any(Number),
+            paid: expect.any(Boolean)
+          })
+        ])
+      );
+    }
+  });
+
+  test("should not be authorized", async () => {
+    const response = await request(app)
+      .get(`/invoices?personalId=${userId}`)
+      .auth(`${authenticationToken}abc`, { type: "bearer" })
+      .send();
+    expect(response.status).toEqual(401);
+    expect(response.type).toEqual("application/json");
+  });
+});
+

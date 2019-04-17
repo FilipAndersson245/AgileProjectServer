@@ -149,7 +149,9 @@ describe("Test get user passages", () => {
   const token = "fhsakdjhjkfds";
 
   test("Should get user's passage correctly", async () => {
+    const response = await request(app)
       .get(`/passages?personalId=${existingUserId}`)
+      .auth(token, { type: "bearer" });
 
     expect(response.status).toEqual(200);
     expect(response.type).toEqual("application/json");
@@ -173,7 +175,9 @@ describe("Test get user passages", () => {
   });
 
   test("Should not find user", async () => {
+    const response = await request(app)
       .get(`/passages?personalId=${noneExistingUserId}`)
+      .auth(token, { type: "bearer" });
 
     expect(response.status).toEqual(404);
     expect(response.type).toEqual("application/json");
@@ -181,7 +185,9 @@ describe("Test get user passages", () => {
   });
 
   test("Should be unauthorized", async () => {
+    const response = await request(app)
       .get(`/passages?personalId=${existingUserId}`)
+      .auth("jhkfdskjhfsdfsdih", { type: "bearer" });
 
     expect(response.status).toEqual(401);
     expect(response.type).toEqual("application/json");

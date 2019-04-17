@@ -4,7 +4,8 @@ import Bodyparser from "koa-bodyparser";
 import {
   gantryDoesNotExistResponse,
   unauthorizationResponse,
-  badRequestResponse
+  badRequestResponse,
+  userNotFoundResponse
 } from "./models/error";
 
 const app = new Koa();
@@ -28,13 +29,23 @@ export let gantries = [
 export let passages = [
   { 
     id: 0,
-    userId: 199301201337,
+    personalId: 199301201337,
     gantryId: "abc123",
     position:  [5.927545,  1.372983],
     time:  1554198125,
     price:  120
   }
 ];
+
+let users = [
+  { 
+    personalId: 199301201337,
+    firstName: "John",
+    lastName: "Smith",
+    email: "john.smith@gmail.com",
+    address: "Coolstreet 8 56912 Jönköping Sweden"
+  }
+]
 
 // logger
 app.use(async (ctx, next) => {
@@ -83,7 +94,7 @@ router.post("/passages", async (ctx, _next) => {
     ctx.body = unauthorizationResponse;
     return;
   }
-  if(!ctx.request.body.userId || !ctx.request.body.gantryId)
+  if(!ctx.request.body.personalId || !ctx.request.body.gantryId)
   {
     ctx.status = 400;
     ctx.body = badRequestResponse;
@@ -97,7 +108,7 @@ router.post("/passages", async (ctx, _next) => {
   }
   const newPassage = {
     id: passages.length,
-    userId: ctx.request.body.userId,
+    personalId: ctx.request.body.personalId,
     gantryId: gantry.id,
     position: gantry.position,
     time: Date.now(),
@@ -106,6 +117,24 @@ router.post("/passages", async (ctx, _next) => {
   passages = [...passages, newPassage]
   ctx.status = 200;
   ctx.body = newPassage;
+});
+
+router.get("/passages", async (ctx, _next) => {
+  if (ctx.headers.authorization !== `Bearer ${token}`) {
+    ctx.status = 401;
+    ctx.body = unauthorizationResponse;
+    return;
+  }
+  if(!users.find((user) => user.personalId === parseInt(ctx.query.personalId)))
+  {
+    ctx.status = 404;
+    ctx.body = userNotFoundResponse;
+    return;
+  }
+  const userPassages = passages.filter((passage) => passage.personalId === ctx.query.personalId);
+
+  ctx.status = 200;
+  ctx.body = userPassages;
 });
 
 const server = app.listen(3000);

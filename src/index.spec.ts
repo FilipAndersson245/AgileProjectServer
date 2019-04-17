@@ -141,3 +141,42 @@ describe("Tests passages", () => {
     expect(response.body).toEqual(unauthorizationResponse);
   });
 });
+
+describe("Invoices", async () => {
+  const userId = "d340jfeowde";
+  const authenticationToken = "23wggassd";
+  test("Should get invoices", async () => {
+    const response = await request(app)
+      .get(`/?personalId=${userId}`)
+      .auth(authenticationToken, { type: "bearer" })
+      .send();
+    expect(response.status).toEqual(200);
+    expect(response.type).toEqual("application/json");
+
+    expect(Array.isArray(response.body)).toBe(true);
+    if (response.body.length > 0) {
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          id: expect.any(Number),
+          amount: expect.any(Number),
+          firstName: expect.any(String),
+          lastName: expect.any(String),
+          adress: expect.any(String),
+          personalIdNumber: expect.any(Number),
+          issuedAt: expect.any(Number),
+          dueDate: expect.any(Number),
+          paid: expect.any(Boolean)
+        })
+      );
+    }
+  });
+
+  test("should not be authorized", async () => {
+    const response = await request(app)
+      .get(`/${userId}`)
+      .auth(`${authenticationToken}abc`, { type: "bearer" })
+      .send();
+    expect(response.status).toEqual(401);
+    expect(response.type).toEqual("application/json");
+  });
+});

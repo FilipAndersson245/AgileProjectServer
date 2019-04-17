@@ -3,7 +3,8 @@ import request from "supertest";
 import {
   gantryDoesNotExistResponse,
   unauthorizationResponse,
-  badRequestResponse
+  badRequestResponse,
+  userNotFoundResponse
 } from "./models/error";
 
 afterEach(() => {
@@ -90,7 +91,7 @@ describe("Tests passages", () => {
   const badId = "jkl345";
 
   const goodBody = {
-    userId: 199308161337,
+    personalId: 199308161337,
     gantryId: goodId
   };
   const badBody = {
@@ -111,7 +112,7 @@ describe("Tests passages", () => {
     expect(response.body).toEqual(
       expect.objectContaining({
         id: expect.any(Number),
-        userId: expect.any(Number),
+        personalId: expect.any(Number),
         gantryId: expect.stringMatching(goodId),
         position: expect.any(Object),
         time: expect.any(Number),
@@ -136,6 +137,58 @@ describe("Tests passages", () => {
       .post(`/passages`)
       .auth("jhkfdskjhfsdfsdih", { type: "bearer" })
       .send(goodBody);
+    expect(response.status).toEqual(401);
+    expect(response.type).toEqual("application/json");
+    expect(response.body).toEqual(unauthorizationResponse);
+  });
+});
+
+describe("Test get user passages", () => {
+  const existingUserId = 199301201337;
+  const noneExistingUserId = 199301201338;
+  const token = "fhsakdjhjkfds";
+
+  test("Should get user's passage correctly", async () => {
+    const response = await request(app)
+      .get(`/passages?personalId=${existingUserId}`)
+      .auth(token, { type: "bearer" });
+
+    expect(response.status).toEqual(200);
+    expect(response.type).toEqual("application/json");
+
+    expect(Array.isArray(response.body)).toBe(true);
+
+    if (response.body.length > 0) {
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(Number),
+            personalId: expect(existingUserId),
+            gantryId: expect.any(Number),
+            position: expect.any(Object),
+            time: expect.any(Number),
+            price: expect.any(Number)
+          })
+        ])
+      );
+    }
+  });
+
+  test("Should not find user", async () => {
+    const response = await request(app)
+      .get(`/passages?personalId=${noneExistingUserId}`)
+      .auth(token, { type: "bearer" });
+
+    expect(response.status).toEqual(404);
+    expect(response.type).toEqual("application/json");
+    expect(response.body).toEqual(userNotFoundResponse);
+  });
+
+  test("Should be unauthorized", async () => {
+    const response = await request(app)
+      .get(`/passages?personalId=${existingUserId}`)
+      .auth("jhkfdskjhfsdfsdih", { type: "bearer" });
+
     expect(response.status).toEqual(401);
     expect(response.type).toEqual("application/json");
     expect(response.body).toEqual(unauthorizationResponse);

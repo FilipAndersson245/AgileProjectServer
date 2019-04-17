@@ -156,17 +156,19 @@ describe("Invoices", async () => {
     expect(Array.isArray(response.body)).toBe(true);
     if (response.body.length > 0) {
       expect(response.body).toEqual(
-        expect.objectContaining({
-          id: expect.any(Number),
-          amount: expect.any(Number),
-          firstName: expect.any(String),
-          lastName: expect.any(String),
-          adress: expect.any(String),
-          personalIdNumber: expect.any(Number),
-          issuedAt: expect.any(Number),
-          dueDate: expect.any(Number),
-          paid: expect.any(Boolean)
-        })
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(Number),
+            amount: expect.any(Number),
+            firstName: expect.any(String),
+            lastName: expect.any(String),
+            address: expect.any(String),
+            personalId: expect.any(Number),
+            issuedAt: expect.any(Number),
+            dueDate: expect.any(Number),
+            paid: expect.any(Boolean)
+          })
+        ])
       );
     }
   });

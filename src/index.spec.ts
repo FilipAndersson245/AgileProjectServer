@@ -95,7 +95,7 @@ describe("Tests passages", () => {
     gantryId: goodId
   };
   const badBody = {
-    userId: 199308161337,
+    personalId: 199308161337,
     gantryId: badId
   };
   const token = "fhsakdjhjkfds";
@@ -144,13 +144,13 @@ describe("Tests passages", () => {
 });
 
 describe("Test get user passages", () => {
-  const existingUserId = 199301201337;
-  const noneExistingUserId = 199301201338;
+  const existingpersonalId = 199301201337;
+  const noneExistingpersonalId = 199301201338;
   const token = "fhsakdjhjkfds";
 
   test("Should get user's passage correctly", async () => {
     const response = await request(app)
-      .get(`/passages?personalId=${existingUserId}`)
+      .get(`/passages?personalId=${existingpersonalId}`)
       .auth(token, { type: "bearer" });
 
     expect(response.status).toEqual(200);
@@ -163,7 +163,7 @@ describe("Test get user passages", () => {
         expect.arrayContaining([
           expect.objectContaining({
             id: expect.any(Number),
-            personalId: expect(existingUserId),
+            personalId: expect(existingpersonalId),
             gantryId: expect.any(Number),
             position: expect.any(Object),
             time: expect.any(Number),
@@ -176,7 +176,7 @@ describe("Test get user passages", () => {
 
   test("Should not find user", async () => {
     const response = await request(app)
-      .get(`/passages?personalId=${noneExistingUserId}`)
+      .get(`/passages?personalId=${noneExistingpersonalId}`)
       .auth(token, { type: "bearer" });
 
     expect(response.status).toEqual(404);
@@ -186,7 +186,7 @@ describe("Test get user passages", () => {
 
   test("Should be unauthorized", async () => {
     const response = await request(app)
-      .get(`/passages?personalId=${existingUserId}`)
+      .get(`/passages?personalId=${existingpersonalId}`)
       .auth("jhkfdskjhfsdfsdih", { type: "bearer" });
 
     expect(response.status).toEqual(401);
@@ -196,11 +196,11 @@ describe("Test get user passages", () => {
 });
 
 describe("Invoices", async () => {
-  const userId = "199301201337";
+  const personalId = "199301201337";
   const authenticationToken = "fhsakdjhjkfds";
   test("Should get invoices", async () => {
     const response = await request(app)
-      .get(`/invoices?personalId=${userId}`)
+      .get(`/invoices?personalId=${personalId}`)
       .auth(authenticationToken, { type: "bearer" })
       .send();
     expect(response.status).toEqual(200);
@@ -228,7 +228,7 @@ describe("Invoices", async () => {
 
   test("should not be authorized", async () => {
     const response = await request(app)
-      .get(`/invoices?personalId=${userId}`)
+      .get(`/invoices?personalId=${personalId}`)
       .auth(`${authenticationToken}abc`, { type: "bearer" })
       .send();
     expect(response.status).toEqual(401);

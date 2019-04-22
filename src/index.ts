@@ -107,7 +107,7 @@ router.post("/passages", async (ctx, _next) => {
     ctx.body = unauthorizationResponse;
     return;
   }
-  if (!ctx.request.body.userId || !ctx.request.body.gantryId) {
+  if (!ctx.request.body.personalId || !ctx.request.body.gantryId) {
     ctx.status = 400;
     ctx.body = badRequestResponse;
     return;

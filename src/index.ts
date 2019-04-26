@@ -37,15 +37,15 @@ export let passages = [
   }
 ];
 
-let users = [
-  { 
+const users = [
+  {
     personalId: 199301201337,
     firstName: "John",
     lastName: "Smith",
     email: "john.smith@gmail.com",
     address: "Coolstreet 8 56912 Jönköping Sweden"
   }
-]
+];
 export let invoices = [
   {
     id: 3,
@@ -137,7 +137,9 @@ router.get("/invoices", async (ctx, _next) => {
     ctx.body = unauthorizationResponse;
     return;
   }
-  ctx.body = invoices.filter((i) => i.personalId === parseInt(ctx.query.personalId));
+  ctx.body = invoices.filter(
+    (i) => i.personalId === parseInt(ctx.query.personalId, 10)
+  );
   ctx.status = 200;
   return;
 });
@@ -148,13 +150,18 @@ router.get("/passages", async (ctx, _next) => {
     ctx.body = unauthorizationResponse;
     return;
   }
-  if(!users.find((user) => user.personalId === parseInt(ctx.query.personalId)))
-  {
+  if (
+    !users.find(
+      (user) => user.personalId === parseInt(ctx.query.personalId, 10)
+    )
+  ) {
     ctx.status = 404;
     ctx.body = userNotFoundResponse;
     return;
   }
-  const userPassages = passages.filter((passage) => passage.personalId === ctx.query.personalId);
+  const userPassages = passages.filter(
+    (passage) => passage.personalId === ctx.query.personalId
+  );
 
   ctx.status = 200;
   ctx.body = userPassages;

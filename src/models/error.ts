@@ -1,7 +1,7 @@
 type GantDoesNotExistMessage = "Gantry doesn't exist.";
 type UnauthorizationMessage = "You are unauthorized to make this request.";
 type BadRequestMessage = "Some parameter(s) were wrong or not provided.";
-type UserNotFoundMessage = "User not found."
+type UserNotFoundMessage = "User not found.";
 
 export type ErrorMessage =
   | GantDoesNotExistMessage

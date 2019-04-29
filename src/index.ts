@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config(); // Load .env to process.env object
+
 import Koa from "koa";
 import Router from "koa-router";
 import Bodyparser from "koa-bodyparser";

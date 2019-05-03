@@ -11,11 +11,17 @@ export class Gantry {
   })
   public id!: string;
 
-  @Column("point", {
-    nullable: true,
-    name: "position"
+  @Column("float", {
+    nullable: false,
+    name: "latitude"
   })
-  public position: string | undefined;
+  public latitude!: number;
+
+  @Column("float", {
+    nullable: false,
+    name: "longitude"
+  })
+  public longitude!: number;
 
   @Column("timestamp", {
     nullable: true,

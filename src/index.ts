@@ -11,10 +11,13 @@ import {
   userNotFoundResponse
 } from "./models/error";
 
+import userRouter from "./routes/user";
+
 const app = new Koa();
 const router = new Router();
 
 app.use(Bodyparser()).use(router.routes());
+app.use(userRouter.routes());
 
 const token = "fhsakdjhjkfds";
 

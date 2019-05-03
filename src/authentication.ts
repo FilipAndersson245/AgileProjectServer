@@ -1,9 +1,8 @@
 import { verify } from "jsonwebtoken";
 import { Response, Request } from "koa";
 
-interface IJwt {
+export interface IJwt {
   readonly sub: string;
-  readonly name: string;
   readonly iat: number;
   readonly exp: number;
 }
@@ -30,8 +29,7 @@ export const authenticateHeader = (autenticationHeader?: string) => {
  * @param token a valid token.
  */
 export const verifyIdentity = (id: string, token?: IJwt) => {
-  if (token && token.sub === id) return true;
-  return false;
+  return token && token.sub === id;
 };
 
 /**
@@ -50,7 +48,7 @@ export const authenticateAndRespondWithMessages = (
   if (!token) {
     res.status = 401;
     res.body = { errorMessage: "Invalid authentication token format" };
-    return res;
+    return;
   }
   if (id) {
     if (!verifyIdentity(id, token)) {

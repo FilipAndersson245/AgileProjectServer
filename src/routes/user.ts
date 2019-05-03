@@ -1,8 +1,9 @@
 import Router from "koa-router";
 import { User } from "../models/user";
 import { getConnection } from "typeorm";
+import { authenticateAndRespondWithMessages } from "../authentication";
 
-const router = new Router({ prefix: "/users" });
+const userRouter = new Router({ prefix: "/users" });
 
 export const validatePersonalId = (personalId: number) => {
   const personalIdLength = personalId.toString().length;
@@ -15,29 +16,29 @@ export const validatePassword = (password: string) =>
   /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.{5,})/.test(password);
 
 export const validateUserRequest = (user: User) => {
-  if (
-    !user.address ||
+  return !user.address ||
     !user.firstName ||
     !user.lastName ||
     validateEmail(user.email) ||
     validatePassword(user.password as string) ||
     validatePersonalId(user.personalIdNumber)
-  ) {
-    return false;
-  }
-  return true;
+    ? false
+    : true;
 };
 
-router.post("/", async (ctx, _next) => {
+userRouter.post("/", async (ctx, _next) => {
+  const token = authenticateAndRespondWithMessages(ctx.request, ctx.response);
+  if (!token) return;
+
   const user: User = ctx.request.body;
   if (validateUserRequest(user)) {
     ctx.response.body = { error: "Invalid request parameters" };
     return;
   }
 
-  const a = await getConnection()
+  await getConnection()
     .getRepository(User)
     .insert(user);
 });
 
-export { router };
+export default userRouter;

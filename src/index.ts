@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config(); // Load .env to process.env object
+
 import Koa from "koa";
 import Router from "koa-router";
 import Bodyparser from "koa-bodyparser";
@@ -8,10 +11,13 @@ import {
   userNotFoundResponse
 } from "./models/error";
 
+import userRouter from "./routes/user";
+
 const app = new Koa();
 const router = new Router();
 
 app.use(Bodyparser()).use(router.routes());
+app.use(userRouter.routes());
 
 const token = "fhsakdjhjkfds";
 

@@ -1,67 +1,44 @@
-import { getConnection } from "typeorm";
-
 import Router from "koa-router";
+import { User } from "../models/user";
+import { getConnection } from "typeorm";
+import { authenticateAndRespondWithMessages } from "../authentication";
 
-const router = new Router({ prefix: "/users" });
-
-interface IUser {
-  personalId: number;
-  password: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  address: string;
-}
+const userRouter = new Router({ prefix: "/users" });
 
 export const validatePersonalId = (personalId: number) => {
   const personalIdLength = personalId.toString().length;
-  if (personalIdLength !== 10 && personalIdLength !== 12) {
-    return false;
-  }
-  return true;
+  return personalIdLength === 10 || personalIdLength === 12;
 };
 
-export const validateEmail = (email: string) => {
-  if (!/\S+@\S+\.\S+/.test(email)) {
-    return false;
-  }
-  return true;
+export const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
+
+export const validatePassword = (password: string) =>
+  /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.{5,})/.test(password);
+
+export const validateUserRequest = (user: User) => {
+  return !user.address ||
+    !user.firstName ||
+    !user.lastName ||
+    validateEmail(user.email) ||
+    validatePassword(user.password as string) ||
+    validatePersonalId(user.personalIdNumber)
+    ? false
+    : true;
 };
 
-export const validatePassword = (password: string) => {
-  if (!/^(?=.*[a-zA-Z])(?=.*[0-9])(?=.{5,})/.test(password)) {
-    return false;
-  }
-  return true;
-};
+userRouter.post("/", async (ctx, _next) => {
+  const token = authenticateAndRespondWithMessages(ctx.request, ctx.response);
+  if (!token) return;
 
-export const validateUserRequest = (user: IUser) => {
-  if (!user.address || !user.firstName || !user.lastName) {
-    return false;
-  }
-  if (validateEmail(user.email)) {
-    return false;
-  }
-  if (validatePassword(user.password)) {
-    return false;
-  }
-  if (validatePersonalId(user.personalId)) {
-    return false;
-  }
-  return true;
-};
-
-router.post("/", async (ctx, _next) => {
-  const user: IUser = ctx.request.body;
+  const user: User = ctx.request.body;
   if (validateUserRequest(user)) {
+    ctx.response.body = { error: "Invalid request parameters" };
     return;
   }
 
-  getConnection();
+  await getConnection()
+    .getRepository(User)
+    .insert(user);
 });
 
-// router.put("/", (req, res) => {
-//   return;
-// });
-
-export { router };
+export default userRouter;

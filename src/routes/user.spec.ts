@@ -1,4 +1,4 @@
-import { validatePersonalId, validateEmail } from "./user";
+import { validatePersonalId, validateEmail, validatePassword } from "./user";
 
 describe("validatePersonalId", async () => {
   it("Should fail, to long id", async () => {
@@ -36,17 +36,17 @@ describe("validate email", async () => {
 
 describe("validate password", async () => {
   it("Should fail, bad password to short", async () => {
-    const password = "abc123";
-    expect(validateEmail(password)).toBeFalsy();
+    const password = "abc1";
+    expect(validatePassword(password)).toBeFalsy();
   });
 
   it("Should fail, bad password no digits", async () => {
     const password = "abcdefghijk";
-    expect(validateEmail(password)).toBeFalsy();
+    expect(validatePassword(password)).toBeFalsy();
   });
 
   it("Should succeed, good password", async () => {
     const password = "abc123456";
-    expect(validateEmail(password)).toBeTruthy();
+    expect(validatePassword(password)).toBeTruthy();
   });
 });

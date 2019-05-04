@@ -16,7 +16,8 @@ export class User {
     length: 60,
     name: "password"
   })
-  public password!: Buffer;
+  // tslint:disable-next-line:ban-types
+  public password!: Buffer | string;
 
   @PrimaryGeneratedColumn({
     type: "int",

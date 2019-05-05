@@ -21,14 +21,16 @@ sessionRouter.post("/", async (ctx, _next) => {
     ctx.response.body = { error: "Grant type not supported!" };
     return;
   }
-  const query = getRepository(User)
-    .createQueryBuilder("user")
-    .select()
-    .where("user.personal_id_number = :user", { username })
-    .getOne();
+  // const querya = getRepository(User)
+  //   .createQueryBuilder("user")
+  //   .select()
+  //   .where("user.personal_id_number = :a", { username })
+  //   .getOne();
+  const query = getRepository(User).findOne(username);
 
   const { data, error } = await sqlpromiseHandler(query);
   if (error) {
+    console.log(error);
     ctx.response.status = 500;
     ctx.response.body = { error: "Internal server error!" };
     return;

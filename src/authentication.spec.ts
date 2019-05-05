@@ -1,7 +1,6 @@
 import { authenticateHeader, verifyIdentity } from "./authentication";
 import { sign } from "jsonwebtoken";
-import dotenv from "dotenv";
-dotenv.config(); // Load .env to process.env object
+process.env.TOKEN_SECRET = "3+jffjnfe0j";
 
 describe("Authentication header", async () => {
   it("Should be validate correctly", async () => {

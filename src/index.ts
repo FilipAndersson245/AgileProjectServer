@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config(); // Load .env to process.env object
+import connectionDetails from "../ormconfig.json";
 
 import Koa from "koa";
 import Router from "koa-router";
@@ -12,12 +13,15 @@ import {
 } from "./models/error";
 
 import userRouter from "./routes/user";
+import sessionRouter from "./routes/session";
+import { getConnection, createConnection, ConnectionOptions } from "typeorm";
 
 const app = new Koa();
 const router = new Router();
 
 app.use(Bodyparser()).use(router.routes());
 app.use(userRouter.routes());
+app.use(sessionRouter.routes());
 
 const token = "fhsakdjhjkfds";
 
@@ -65,6 +69,11 @@ export let invoices = [
     paid: false
   }
 ];
+
+(async () => {
+  await createConnection(connectionDetails as ConnectionOptions);
+  await getConnection();
+})();
 
 // logger
 app.use(async (ctx, next) => {

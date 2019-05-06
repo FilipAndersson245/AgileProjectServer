@@ -21,7 +21,7 @@ export const token = "fhsakdjhjkfds";
     await createConnection(connectionDetails);
     await getConnection();
   // tslint:disable-next-line:no-empty
-  } catch (e){}
+  } catch (e) {}
 
   const app = new Koa();
   const router = new Router();

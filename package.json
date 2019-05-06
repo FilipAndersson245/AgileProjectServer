@@ -4,7 +4,7 @@
   "description": "repo for project in the course internet and cloud services",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node ./src/index.ts",
+    "start": "SET NODE_ENV=development && ts-node ./src/index.ts",
     "test": "jest",
     "test-watch": "jest --watch"
   },

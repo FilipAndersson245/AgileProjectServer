@@ -21,11 +21,6 @@ sessionRouter.post("/", async (ctx, _next) => {
     ctx.response.body = { error: "Grant type not supported!" };
     return;
   }
-  // const querya = getRepository(User)
-  //   .createQueryBuilder("user")
-  //   .select()
-  //   .where("user.personal_id_number = :a", { username })
-  //   .getOne();
   const query = getRepository(User).findOne(username);
 
   const { data, error } = await sqlpromiseHandler(query);

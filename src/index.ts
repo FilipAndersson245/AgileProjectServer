@@ -5,7 +5,6 @@ import Koa from "koa";
 import Router from "koa-router";
 import Bodyparser from "koa-bodyparser";
 import { createConnection, ConnectionOptions, getConnection } from "typeorm";
-import connectionDetails from "../ormconfig.json";
 import gantriesRouter from "./routes/gantriesRouter";
 import passagesRouter from "./routes/passagesRouter";
 import invoicesRouter from "./routes/invoicesRouter";
@@ -17,17 +16,15 @@ export const token = "fhsakdjhjkfds";
 (async () => {
   const port = process.env.PORT || 3000;
 
-  await createConnection(connectionDetails as ConnectionOptions);
-  await getConnection();
+  try {
+    const connectionDetails: ConnectionOptions = await require("../ormconfig.json");
+    await createConnection(connectionDetails);
+    await getConnection();
+  // tslint:disable-next-line:no-empty
+  } catch (e){}
+
   const app = new Koa();
   const router = new Router();
-
-  app.use(Bodyparser()).use(router.routes());
-  app.use(gantriesRouter.routes());
-  app.use(passagesRouter.routes());
-  app.use(invoicesRouter.routes());
-  app.use(userRouter.routes());
-  app.use(sessionRouter.routes());
 
   if (process.env.NODE_ENV === "development") {
     // logger
@@ -45,6 +42,13 @@ export const token = "fhsakdjhjkfds";
       ctx.set("X-Response-Time", `${ms}ms`);
     });
   }
+
+  app.use(Bodyparser()).use(router.routes());
+  app.use(gantriesRouter.routes());
+  app.use(passagesRouter.routes());
+  app.use(invoicesRouter.routes());
+  app.use(userRouter.routes());
+  app.use(sessionRouter.routes());
 
   app.listen(port);
   console.log(`Started server on port ${port}`);

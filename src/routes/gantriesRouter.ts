@@ -5,12 +5,11 @@ import {
 } from "../models/error";
 import { getRepository } from "typeorm";
 import { Gantry } from "../models/gantry";
-import { token } from "..";
 
 const gantriesRouter = new Router({ prefix: "/gantries" });
 
 gantriesRouter.post("/:id", async (ctx, _next) => {
-  if (ctx.headers.authorization !== `Bearer ${token}`) {
+  if (ctx.headers.authorization !== process.env.GANTRY_SECRET) {
     ctx.status = 401;
     ctx.body = unauthorizationResponse;
     return;

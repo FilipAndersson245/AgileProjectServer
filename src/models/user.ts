@@ -16,7 +16,6 @@ export class User {
     length: 60,
     name: "password"
   })
-  // tslint:disable-next-line:ban-types
   public password!: Buffer | string;
 
   @Column("varchar", {

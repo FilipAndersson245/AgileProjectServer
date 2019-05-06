@@ -1,7 +1,6 @@
 import Router from "koa-router";
 import { User } from "../models/user";
 import { getConnectionManager } from "typeorm";
-// import { authenticateAndRespondWithMessages } from "../authentication";
 import { hash } from "bcrypt";
 import { sqlpromiseHandler } from "../db";
 
@@ -36,9 +35,6 @@ export const validateUserRequest = (user: User) => {
 };
 
 userRouter.post("/", async (ctx, _next) => {
-  // const token = authenticateAndRespondWithMessages(ctx.request, ctx.response);
-  // if (!token) return;
-
   const user: User = ctx.request.body;
   if (validateUserRequest(user)) {
     ctx.response.body = { error: "Invalid request parameters" };

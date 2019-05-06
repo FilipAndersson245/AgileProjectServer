@@ -1,3 +1,7 @@
+import dotenv from "dotenv";
+dotenv.config(); // Load .env to process.env object
+import connectionDetails from "../ormconfig.json";
+
 import Koa from "koa";
 import Router from "koa-router";
 import Bodyparser from "koa-bodyparser";
@@ -8,10 +12,16 @@ import {
   userNotFoundResponse
 } from "./models/error";
 
+import userRouter from "./routes/user";
+import sessionRouter from "./routes/session";
+import { getConnection, createConnection, ConnectionOptions } from "typeorm";
+
 const app = new Koa();
 const router = new Router();
 
 app.use(Bodyparser()).use(router.routes());
+app.use(userRouter.routes());
+app.use(sessionRouter.routes());
 
 const token = "fhsakdjhjkfds";
 
@@ -37,15 +47,15 @@ export let passages = [
   }
 ];
 
-let users = [
-  { 
+const users = [
+  {
     personalId: 199301201337,
     firstName: "John",
     lastName: "Smith",
     email: "john.smith@gmail.com",
     address: "Coolstreet 8 56912 Jönköping Sweden"
   }
-]
+];
 export let invoices = [
   {
     id: 3,
@@ -59,6 +69,11 @@ export let invoices = [
     paid: false
   }
 ];
+
+(async () => {
+  await createConnection(connectionDetails as ConnectionOptions);
+  await getConnection();
+})();
 
 // logger
 app.use(async (ctx, next) => {
@@ -137,7 +152,9 @@ router.get("/invoices", async (ctx, _next) => {
     ctx.body = unauthorizationResponse;
     return;
   }
-  ctx.body = invoices.filter((i) => i.personalId === parseInt(ctx.query.personalId));
+  ctx.body = invoices.filter(
+    (i) => i.personalId === parseInt(ctx.query.personalId, 10)
+  );
   ctx.status = 200;
   return;
 });
@@ -148,13 +165,18 @@ router.get("/passages", async (ctx, _next) => {
     ctx.body = unauthorizationResponse;
     return;
   }
-  if(!users.find((user) => user.personalId === parseInt(ctx.query.personalId)))
-  {
+  if (
+    !users.find(
+      (user) => user.personalId === parseInt(ctx.query.personalId, 10)
+    )
+  ) {
     ctx.status = 404;
     ctx.body = userNotFoundResponse;
     return;
   }
-  const userPassages = passages.filter((passage) => passage.personalId === ctx.query.personalId);
+  const userPassages = passages.filter(
+    (passage) => passage.personalId === ctx.query.personalId
+  );
 
   ctx.status = 200;
   ctx.body = userPassages;

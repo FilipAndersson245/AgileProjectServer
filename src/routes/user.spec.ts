@@ -2,22 +2,22 @@ import { validatePersonalId, validateEmail, validatePassword } from "./user";
 
 describe("validatePersonalId", async () => {
   it("Should fail, to long id", async () => {
-    const id = 12345678946914564;
+    const id = "12345678946914564";
     expect(validatePersonalId(id)).toBeFalsy();
   });
 
   it("Should fail, to short id", async () => {
-    const id = 12687;
+    const id = "12687";
     expect(validatePersonalId(id)).toBeFalsy();
   });
 
   it("Should succeed, short id", async () => {
-    const id = 8901023286;
+    const id = "8901023286";
     expect(validatePersonalId(id)).toBeTruthy();
   });
 
   it("Should succeed, long id", async () => {
-    const id = 198901023286;
+    const id = "198901023286";
     expect(validatePersonalId(id)).toBeTruthy();
   });
 });

@@ -9,9 +9,14 @@ const userRouter = new Router({ prefix: "/users" });
 
 const hashRounds = 4;
 
-export const validatePersonalId = (personalId: number) => {
-  const personalIdLength = personalId.toString().length;
-  return personalIdLength === 10 || personalIdLength === 12;
+export const validatePersonalId = (personalId: string) => {
+  try {
+    const numericalPersonalId = parseInt(personalId, 10);
+    const personalIdLength = numericalPersonalId.toString().length;
+    return personalIdLength === 10 || personalIdLength === 12;
+  } catch (e) {
+    return false;
+  }
 };
 
 export const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);

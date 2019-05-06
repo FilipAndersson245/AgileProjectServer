@@ -11,7 +11,7 @@ import { User } from "./user";
 
 @Entity("passage", { schema: "AgileDB" })
 @Index("fk_passage_gantry1_idx", ["gantry"])
-@Index("fk_passage_user1_idx", ["userPersonalIdNumber"])
+@Index("fk_passage_user1_idx", ["user"])
 export class Passage {
   @PrimaryGeneratedColumn({
     type: "int",
@@ -31,11 +31,17 @@ export class Passage {
   })
   public price!: number;
 
-  @Column("point", {
+  @Column("float", {
     nullable: false,
-    name: "position"
+    name: "latitude"
   })
-  public position!: string;
+  public latitude!: number;
+
+  @Column("float", {
+    nullable: false,
+    name: "longitude"
+  })
+  public longitude!: number;
 
   @ManyToOne((_type) => Gantry, (gantry) => gantry.passages, {
     nullable: false,
@@ -43,7 +49,7 @@ export class Passage {
     onUpdate: "NO ACTION"
   })
   @JoinColumn({ name: "gantry_id" })
-  public gantry: Gantry | undefined;
+  public gantry!: Gantry;
 
   @ManyToOne((_type) => User, (user) => user.passages, {
     nullable: false,
@@ -51,5 +57,5 @@ export class Passage {
     onUpdate: "NO ACTION"
   })
   @JoinColumn({ name: "user_personal_id_number" })
-  public userPersonalIdNumber: User | undefined;
+  public user!: User;
 }

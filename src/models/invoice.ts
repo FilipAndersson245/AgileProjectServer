@@ -9,7 +9,7 @@ import {
 import { User } from "./user";
 
 @Entity("invoice", { schema: "AgileDB" })
-@Index("fk_invoice_user1_idx", ["userPersonalIdNumber"])
+@Index("fk_invoice_user1_idx", ["user"])
 export class Invoice {
   @PrimaryGeneratedColumn({
     type: "int",
@@ -47,5 +47,5 @@ export class Invoice {
     onUpdate: "NO ACTION"
   })
   @JoinColumn({ name: "user_personal_id_number" })
-  public userPersonalIdNumber: User | undefined;
+  public user!: User;
 }

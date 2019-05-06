@@ -5,7 +5,7 @@ import { sqlpromiseHandler } from "../db";
 import { User } from "../models/user";
 import { compare } from "bcrypt";
 
-const sessionRouter = new Router({ prefix: "/session" });
+const sessionRouter = new Router({ prefix: "/sessions" });
 
 sessionRouter.post("/", async (ctx, _next) => {
   const username: string = ctx.request.body.username;

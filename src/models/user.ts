@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 import { Invoice } from "./invoice";
 import { Passage } from "./passage";
 
@@ -19,11 +19,13 @@ export class User {
   // tslint:disable-next-line:ban-types
   public password!: Buffer | string;
 
-  @PrimaryGeneratedColumn({
-    type: "int",
+  @Column("varchar", {
+    nullable: false,
+    primary: true,
+    length: 12,
     name: "personal_id_number"
   })
-  public personalIdNumber!: number;
+  public personalIdNumber!: string;
 
   @Column("varchar", {
     nullable: false,
@@ -53,13 +55,13 @@ export class User {
   })
   public lastName: string | undefined;
 
-  @OneToMany((_type) => Invoice, (invoice) => invoice.userPersonalIdNumber, {
+  @OneToMany((_type) => Invoice, (invoice) => invoice.user, {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION"
   })
   public invoices!: Array<Invoice>;
 
-  @OneToMany((_type) => Passage, (passage) => passage.userPersonalIdNumber, {
+  @OneToMany((_type) => Passage, (passage) => passage.user, {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION"
   })

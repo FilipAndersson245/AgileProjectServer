@@ -1,21 +1,18 @@
 import Router from "koa-router";
 import { getRepository } from "typeorm";
 import { Passage } from "../models/passage";
-import { token } from "..";
 import {
-  unauthorizationResponse,
   badRequestResponse,
   userNotFoundResponse
 } from "../models/error";
 import { Gantry } from "../models/gantry";
 import { User } from "../models/user";
+import { authenticateAndRespondWithMessages } from "../authentication";
 
 const passagesRouter = new Router({ prefix: "/passages" });
 
 passagesRouter.post("/", async (ctx, _next) => {
-  if (ctx.headers.authorization !== `Bearer ${token}`) {
-    ctx.status = 401;
-    ctx.body = unauthorizationResponse;
+  if (!authenticateAndRespondWithMessages(ctx, ctx.request.body.personalId)) {
     return;
   }
   if (!ctx.request.body.personalId || !ctx.request.body.gantryId) {
@@ -47,9 +44,7 @@ passagesRouter.post("/", async (ctx, _next) => {
 });
 
 passagesRouter.get("/", async (ctx, _next) => {
-  if (ctx.headers.authorization !== `Bearer ${token}`) {
-    ctx.status = 401;
-    ctx.body = unauthorizationResponse;
+  if (!authenticateAndRespondWithMessages(ctx, ctx.query.personalId)) {
     return;
   }
 

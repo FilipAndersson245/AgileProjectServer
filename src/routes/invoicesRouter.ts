@@ -1,15 +1,12 @@
 import Router from "koa-router";
-import { token } from "..";
-import { unauthorizationResponse } from "../models/error";
 import { getRepository } from "typeorm";
 import { Invoice } from "../models/invoice";
+import { authenticateAndRespondWithMessages } from "../authentication";
 
 const invoicesRouter = new Router({ prefix: "/invoices" });
 
 invoicesRouter.get("/", async (ctx, _next) => {
-  if (ctx.headers.authorization !== `Bearer ${token}`) {
-    ctx.status = 401;
-    ctx.body = unauthorizationResponse;
+  if (!authenticateAndRespondWithMessages(ctx, ctx.query.personalId)) {
     return;
   }
   const userInvoices = await getRepository(Invoice).find({

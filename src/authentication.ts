@@ -1,5 +1,6 @@
 import { verify } from "jsonwebtoken";
-import { Response, Request } from "koa";
+import { ParameterizedContext } from "koa";
+import { unauthorizationResponse } from "./models/error";
 
 export interface IJwt {
   readonly sub: string;
@@ -35,25 +36,25 @@ export const verifyIdentity = (id: string, token?: IJwt) => {
 /**
  * Verify authentication and return true / false if it is successfully.
  * id also checked be matching if it exists as a parameter.
- * @param req
- * @param res
+ * @param ctx
  * @param id
  */
 export const authenticateAndRespondWithMessages = (
-  req: Request,
-  res: Response,
+  ctx: ParameterizedContext,
   id?: string
 ) => {
+  const req = ctx.request;
+  const res = ctx.response;
   const token = authenticateHeader(req.headers.authorization);
   if (!token) {
     res.status = 401;
-    res.body = { errorMessage: "Invalid authentication token format" };
+    res.body = unauthorizationResponse;
     return;
   }
   if (id) {
     if (!verifyIdentity(id, token)) {
       res.status = 401;
-      res.body = { errorMessage: "Unauthorized" };
+      res.body = unauthorizationResponse;
       return;
     }
   }

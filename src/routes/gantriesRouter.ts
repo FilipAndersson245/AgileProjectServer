@@ -37,7 +37,21 @@ gantriesRouter.post("/:id", async (ctx, _next) => {
 
 gantriesRouter.get("/", async (ctx, _next) => {
   ctx.status = 200;
-  ctx.body = await getRepository(Gantry).find();
+  ctx.body = await getRepository(Gantry).query(
+    `SELECT id, lastUpdate, price, latitude, longitude
+    FROM (SELECT *,
+    (
+       acos(cos(radians(?)) *
+       cos(radians(latitude)) *
+       cos(radians(longitude) -
+       radians(?)) +
+       sin(radians(?)) *
+       sin(radians(latitude)))
+    ) AS distance
+    FROM gantry
+    ORDER BY distance LIMIT 0, 3) AS T;`,
+    [ctx.query.lat, ctx.query.lon, ctx.query.lat]
+  );
 });
 
 export default gantriesRouter;

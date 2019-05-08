@@ -27,7 +27,7 @@ export class Invoice {
     nullable: true,
     name: "paid"
   })
-  public paid: number | undefined;
+  public paid: boolean | undefined;
 
   @Column("timestamp", {
     nullable: true,
@@ -48,4 +48,11 @@ export class Invoice {
   })
   @JoinColumn({ name: "user_personal_id_number" })
   public user!: User;
+
+  @Column("varchar", {
+    nullable: false,
+    length: 64,
+    name: "user_personal_id_number"
+  })
+  public userId!: string;
 }

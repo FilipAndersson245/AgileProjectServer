@@ -10,7 +10,7 @@ invoicesRouter.get("/", async (ctx, _next) => {
     return;
   }
   const userInvoices = await getRepository(Invoice).find({
-    user: ctx.query.personalId
+    userId: ctx.query.personalId
   });
   ctx.status = 200;
   ctx.body = userInvoices;

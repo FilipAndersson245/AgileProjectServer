@@ -10,6 +10,7 @@ import passagesRouter from "./routes/passagesRouter";
 import invoicesRouter from "./routes/invoicesRouter";
 import userRouter from "./routes/user";
 import sessionRouter from "./routes/session";
+import invoiceGeneration from "./invoiceGeneration";
 
 export const token = "fhsakdjhjkfds";
 
@@ -20,8 +21,10 @@ export const token = "fhsakdjhjkfds";
     const connectionDetails: ConnectionOptions = await require("../ormconfig.json");
     await createConnection(connectionDetails);
     await getConnection();
-  // tslint:disable-next-line:no-empty
-  } catch (e){}
+
+    invoiceGeneration;
+    // tslint:disable-next-line:no-empty
+  } catch (e) { }
 
   const app = new Koa();
   const router = new Router();

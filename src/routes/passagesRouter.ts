@@ -29,7 +29,7 @@ passagesRouter.post("/", async (ctx, _next) => {
     return;
   }
   const newPassage = {
-    user: ctx.request.body.personalId,
+    userId: ctx.request.body.personalId,
     gantry,
     latitude: gantry.latitude,
     longitude: gantry.longitude,

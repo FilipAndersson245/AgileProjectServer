@@ -58,4 +58,11 @@ export class Passage {
   })
   @JoinColumn({ name: "user_personal_id_number" })
   public user!: User;
+
+  @Column("varchar", {
+    nullable: false,
+    length: 64,
+    name: "user_personal_id_number"
+  })
+  public userId!: string;
 }

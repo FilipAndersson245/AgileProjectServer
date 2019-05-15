@@ -38,7 +38,7 @@ gantriesRouter.post("/:id", async (ctx, _next) => {
 gantriesRouter.get("/", async (ctx, _next) => {
   ctx.status = 200;
   ctx.body = await getRepository(Gantry).query(
-    `SELECT id, lastUpdate, price, latitude, longitude
+    `SELECT id, lastUpdate, price, format(latitude, 6) AS latitude, format(longitude, 6) AS longitude
     FROM (SELECT *,
     (
        acos(cos(radians(?)) *

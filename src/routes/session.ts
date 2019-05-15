@@ -35,7 +35,7 @@ sessionRouter.post("/", async (ctx, _next) => {
     ctx.response.body = { error: "Account does not exist!" };
     return;
   }
-  if (await compare(password, data!.password as string)) {
+  if (await compare(password, data!.password.toString())) {
     const token = sign(
       { sub: data!.personalIdNumber },
       process.env.TOKEN_SECRET!,

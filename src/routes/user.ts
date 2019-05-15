@@ -48,6 +48,7 @@ userRouter.post("/", async (ctx, _next) => {
     .insert(user);
   const { error } = await sqlpromiseHandler(a);
   if (error) {
+    console.log(error)
     ctx.response.status = 500;
     ctx.response.body = { error: "Failed request" };
     return;

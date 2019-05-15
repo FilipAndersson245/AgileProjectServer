@@ -30,7 +30,7 @@ export const authenticateHeader = (autenticationHeader?: string) => {
  * @param token a valid token.
  */
 export const verifyIdentity = (id: string, token?: IJwt) => {
-  return token && token.sub === id;
+  return token && token.sub.toString() === id.toString();
 };
 
 /**

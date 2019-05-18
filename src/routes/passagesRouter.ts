@@ -60,7 +60,8 @@ passagesRouter.get("/", async (ctx, _next) => {
   // const userPassages = await getRepository(Passage).find({ user });
 
   const userPassages = await getRepository(Passage).query(
-    `SELECT id, time, price, gantry_id, user_personal_id_number, format(latitude, 6), format(longitude, 6)
+    // tslint:disable-next-line:max-line-length
+    `SELECT id, time, price, gantry_id, user_personal_id_number, format(latitude, 6) AS latitude, format(longitude, 6) AS longitude
     FROM passage WHERE user_personal_id_number = ?;`,
     [user.personalIdNumber]
   );

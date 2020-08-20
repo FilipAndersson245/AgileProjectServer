@@ -33,7 +33,7 @@
     "tslint": "^5.16.0"
   },
   "dependencies": {
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "dotenv": "^7.0.0",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.5.3",
